@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Ragebaiter 🦆</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+
+    <div id="screen-title" class="screen active">
+      <div class="title-bg"></div>
+      <div class="title-content">
+        <div class="title-ducks">
+          <canvas id="title-duck-left" width="130" height="130"></canvas>
+          <canvas id="title-duck-right" width="130" height="130"></canvas>
+        </div>
+        <h1 class="game-title">The Ragebaiter</h1>
+        <p class="game-sub">A Love Story... Eventually 💕</p>
+        <div class="title-buttons">
+          <button class="btn btn-primary" id="btn-create">🦆 Create Room</button>
+          <button class="btn btn-secondary" id="btn-join">💌 Join Room</button>
+        </div>
+      </div>
+      <div class="floating-hearts" id="title-hearts"></div>
+    </div>
+
+    <div id="screen-create" class="screen">
+      <div class="lobby-box">
+        <h2>You are <span class="duck-name ms-shortfuse">Ms. Short Fuse</span> 💢</h2>
+        <canvas id="preview-gf" width="110" height="110" style="display:block;margin:0 auto 10px;"></canvas>
+        <p class="lobby-desc">Share this code with your boyfriend:</p>
+        <div class="room-code-display" id="room-code-display">Connecting...</div>
+        <div class="connection-status" id="create-status">⏳ Waiting for him to join...</div>
+        <button class="btn btn-back" id="btn-back-create">← Back</button>
+      </div>
+    </div>
+
+    <div id="screen-join" class="screen">
+      <div class="lobby-box">
+        <h2>You are <span class="duck-name ragebaiter">The Ragebaiter</span> 😏</h2>
+        <canvas id="preview-bf" width="110" height="110" style="display:block;margin:0 auto 10px;"></canvas>
+        <p class="lobby-desc">Enter the room code:</p>
+        <input type="text" id="room-code-input" class="room-input" placeholder="e.g. DUCK42" maxlength="8">
+        <button class="btn btn-primary" id="btn-connect">Join Game 🎮</button>
+        <div class="connection-status" id="join-status"></div>
+        <button class="btn btn-back" id="btn-back-join">← Back</button>
+      </div>
+    </div>
+
+    <div id="screen-round-intro" class="screen">
+      <div class="round-intro-content">
+        <div class="round-badge" id="round-badge">Round 1</div>
+        <h2 class="round-location" id="round-location">🌸 Cherry Blossom Park</h2>
+        <p class="round-flavor" id="round-flavor">A peaceful park... about to get chaotic.</p>
+        <div class="score-display">
+          <span class="score-item">💢 Ms. Short Fuse: <b id="score-gf">0</b></span>
+          <span class="score-item">😏 Ragebaiter: <b id="score-bf">0</b></span>
+        </div>
+        <div class="round-controls-hint">
+          <div class="hint-box"><b>Ms. Short Fuse</b><br>← → Move &nbsp;|&nbsp; ↑ Jump &nbsp;|&nbsp; Space Throw</div>
+          <div class="hint-box"><b>Ragebaiter</b><br>A D Move &nbsp;|&nbsp; W Jump &nbsp;|&nbsp; F Use Item</div>
+        </div>
+        <button class="btn btn-primary" id="btn-start-round">Let's Go! 🏃</button>
+      </div>
+    </div>
+
+    <div id="screen-game" class="screen">
+      <div class="game-hud">
+        <div class="hud-left">
+          <span class="hud-char ms-shortfuse">💢 Ms. Short Fuse</span>
+        </div>
+        <div class="hud-center">
+          <span id="hud-round-label">Round 1/5</span><br>
+          <span id="hud-location-label" style="font-size:13px;">🌸 Cherry Blossom Park</span>
+        </div>
+        <div class="hud-right">
+          <span class="hud-char ragebaiter">😏 Ragebaiter</span>
+        </div>
+      </div>
+      <canvas id="game-canvas"></canvas>
+      <div id="round-message" class="round-message hidden"></div>
+    </div>
+
+    <div id="screen-round-result" class="screen">
+      <div class="result-content">
+        <div class="result-emoji" id="result-emoji">🎉</div>
+        <h2 class="result-title" id="result-title">Ms. Short Fuse wins!</h2>
+        <p class="result-desc" id="result-desc">She made it to the finish line!</p>
+        <div class="score-display">
+          <span class="score-item">💢 <b id="result-score-gf">0</b></span>
+          <span class="vs-divider">vs</span>
+          <span class="score-item ragebaiter">😏 <b id="result-score-bf">0</b></span>
+        </div>
+        <button class="btn btn-primary" id="btn-next-round">Next Round →</button>
+      </div>
+    </div>
+
+    <div id="screen-final" class="screen">
+      <div class="final-content">
+        <canvas id="final-canvas" width="520" height="280"></canvas>
+        <h1 class="final-title" id="final-title">She wins!</h1>
+        <p class="final-desc" id="final-desc">...</p>
+        <div class="final-score">
+          <span>💢 Ms. Short Fuse: <b id="final-score-gf">0</b></span>
+          <span>😏 Ragebaiter: <b id="final-score-bf">0</b></span>
+        </div>
+        <button class="btn btn-primary" id="btn-play-again">Play Again 🦆</button>
+      </div>
+      <div class="floating-hearts" id="final-hearts"></div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <script src="js/ducks.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/network.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
