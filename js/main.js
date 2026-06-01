@@ -274,8 +274,6 @@ function showGameOver(winnerChar) {
 
 function restartGame() {
   GS = makeGameState();
-  if (isHost()) {
-    sendToPeer({ type: 'startRound', round: 0 });
-    loadRound(0);
-  }
+  sendToPeer({ type: 'startRound', round: 0 });
+  loadRound(0);
 }

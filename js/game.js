@@ -118,16 +118,15 @@ function updateGame() {
   if (!GS || GS.phase !== 'running') return;
   GS.tick++;
 
-  const myC = getMyChar(); // 'gf' or 'bf'
-
-  // Read local input
-  let myInput = myC === 'gf' ? getGfInput() : getBfInput();
-
-  // Apply local input to my duck
-  applyInput(GS[myC], myInput, myC);
+  // Always apply gf input to gf duck, bf input to bf duck
+  // getMyChar() tells us which one is LOCAL (for network sync)
+  // but both ducks always respond to their keys regardless
+  applyInput(GS.gf, getGfInput(), 'gf');
+  applyInput(GS.bf, getBfInput(), 'bf');
 
   // Send my duck state to peer (every 2 ticks)
-  if (GS.tick !== lastSentTick && GS.tick % 2 === 0) {
+  const myC = getMyChar(); // may be null before connection — that's fine
+  if (myC && GS.tick !== lastSentTick && GS.tick % 2 === 0) {
     lastSentTick = GS.tick;
     sendToPeer({
       type: 'duckState',
