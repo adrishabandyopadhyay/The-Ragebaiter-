@@ -154,16 +154,16 @@ function drawFlower(ctx,x,y,size=14){
   ctx.restore();
 }
 
-function renderStaticGf(canvasId, scale=1){
+function renderStaticGf(canvasId, scale=1, facingLeft=false){
   const c=document.getElementById(canvasId); if(!c)return;
   const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
-  drawGfDuck(ctx,c.width/2,c.height/2+8,scale,0,false,'idle');
+  drawGfDuck(ctx,c.width/2,c.height/2+8,scale,0,facingLeft,'idle');
 }
 
-function renderStaticBf(canvasId, scale=1){
+function renderStaticBf(canvasId, scale=1, facingLeft=false){
   const c=document.getElementById(canvasId); if(!c)return;
   const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
-  drawBfDuck(ctx,c.width/2,c.height/2+8,scale,0,false,'idle');
+  drawBfDuck(ctx,c.width/2,c.height/2+8,scale,0,facingLeft,'idle');
 }
 
 function drawWeddingScene(ctx,w,h){

@@ -11,8 +11,8 @@ function showScreen(id) {
 
 // ── Init title screen ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-  renderStaticGf('titleDuckLeft', 0.85);
-  renderStaticBf('titleDuckRight', 0.85);
+  renderStaticGf('titleDuckLeft', 0.85, false);  // gf faces RIGHT
+  renderStaticBf('titleDuckRight', 0.85, true);   // bf faces LEFT (toward gf)
   spawnFloatingHearts();
   showScreen('screen-title');
   // Resize canvas to fit window

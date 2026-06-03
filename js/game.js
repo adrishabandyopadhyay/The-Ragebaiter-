@@ -39,7 +39,7 @@ function makeDuck(who) {
     vx: 0,
     vy: 0,
     speed: isGf ? 3.8 : 3.4,
-    facing: isGf ? 1 : 1,
+    facing: 1, // always start facing right
     state: 'idle',  // idle | run | hit | angry
     slowTimer: 0,   // ticks remaining of slow effect
     stunTimer: 0,   // ticks remaining of stun
@@ -177,7 +177,7 @@ function applyInput(duck, input, who) {
 
   if (input.left)  { duck.vx = -spd; duck.facing = -1; duck.state = 'run'; }
   else if (input.right) { duck.vx = spd; duck.facing = 1; duck.state = 'run'; }
-  else { duck.vx *= 0.7; duck.state = 'idle'; }
+  else { duck.vx *= 0.7; if (duck.facing === 0) duck.facing = 1; duck.state = 'idle'; }
 
   // Throw
   if (input.throw && duck.throwCooldown <= 0) {
@@ -387,10 +387,8 @@ function renderGame() {
   const gfBob = Math.abs(GS.gf.vx) > 0.5 ? walkBob(GS.tick, 1.4) : 0;
   const bfBob = Math.abs(GS.bf.vx) > 0.5 ? walkBob(GS.tick, 1.4) : 0;
 
-  // gf faces RIGHT (away from bf, toward finish) unless moving left
-  // bf faces RIGHT (toward gf who is ahead) unless moving left
-  drawGfDuck(ctx, GS.gf.x, GS.gf.y + gfBob, 0.9, GS.gf.anim, GS.gf.facing < 0, GS.gf.state);
-  drawBfDuck(ctx, GS.bf.x, GS.bf.y + bfBob, 0.9, GS.bf.anim, GS.bf.facing < 0, GS.bf.state);
+  drawGfDuck(ctx, GS.gf.x, GS.gf.y + gfBob, 0.9, GS.gf.anim, GS.gf.facing === -1, GS.gf.state);
+  drawBfDuck(ctx, GS.bf.x, GS.bf.y + bfBob, 0.9, GS.bf.anim, GS.bf.facing === -1, GS.bf.state);
 
   // Slow effect
   if (GS.gf.slowTimer > 0 && GS.gf.slowTimer % 8 < 4) {
