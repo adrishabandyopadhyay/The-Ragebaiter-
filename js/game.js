@@ -124,8 +124,10 @@ function updateGame() {
   applyInput(GS.gf, getGfInput(), 'gf');
   applyInput(GS.bf, getBfInput(), 'bf');
 
+  // My character (for network sync + camera)
+  const myC = getMyChar() || 'gf';
+
   // Send my duck state to peer (every 2 ticks)
-  const myC = getMyChar(); // may be null before connection — that's fine
   if (myC && GS.tick !== lastSentTick && GS.tick % 2 === 0) {
     lastSentTick = GS.tick;
     sendToPeer({
@@ -157,13 +159,12 @@ function updateGame() {
   // Particles
   GS.particles = GS.particles.filter(p => { p.life--; p.x += p.vx; p.y += p.vy; p.vy += 0.3; return p.life > 0; });
 
-  // Camera follows YOUR duck — lock to 25% from left edge
-  const myC = getMyChar() || 'gf';
+  // Camera follows YOUR duck — keep at 25% from left edge
   const myDuck = GS[myC];
   const targetCam = myDuck.x - CANVAS_W * 0.25;
   GS.camX += (targetCam - GS.camX) * 0.15;
   GS.camX = Math.max(0, Math.min(WORLD_W - CANVAS_W, GS.camX));
-  if (GS.tick % 60 === 0) console.log('myC:', myC, 'duck.x:', myDuck.x, 'camX:', GS.camX, 'CANVAS_W:', CANVAS_W);
+  if (GS.tick % 60 === 0) console.log('myC:', myC, 'duck.x:', myDuck.x, 'camX:', GS.camX);
 
   // Win condition
   checkWinCondition();
