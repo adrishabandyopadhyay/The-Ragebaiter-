@@ -324,6 +324,8 @@ function endRound(winnerChar) {
 function renderGame() {
   const canvas = document.getElementById('gameCanvas');
   if (!canvas || !GS) return;
+  // Render in both 'running' and 'intro' so canvas is never blank
+  if (GS.phase !== 'running' && GS.phase !== 'intro') return;
   const ctx = canvas.getContext('2d');
 
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);

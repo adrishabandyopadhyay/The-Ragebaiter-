@@ -126,26 +126,63 @@ function loadRound(roundIndex) {
   renderStaticGf('hudGfDuck', 0.4);
   renderStaticBf('hudBfDuck', 0.4);
 
-  showScreen('screen-round-intro');
+  showScreen('screen-game');
   startGameLoop();
 
-  // Countdown
+  // Countdown overlay
   let count = 3;
   const el = document.getElementById('countdownText');
-  el.textContent = count;
+
+  // Show countdown as overlay on game screen
+  showCountdownOverlay(count);
 
   const interval = setInterval(() => {
     count--;
     if (count > 0) {
-      el.textContent = count;
+      showCountdownOverlay(count);
     } else if (count === 0) {
-      el.textContent = 'GO! 🦆';
+      showCountdownOverlay('GO! 🦆');
     } else {
       clearInterval(interval);
-      showScreen('screen-game');
+      hideCountdownOverlay();
       GS.phase = 'running';
     }
   }, 900);
+}
+
+// ── Countdown overlay ──────────────────────────────────────
+function showCountdownOverlay(text) {
+  let el = document.getElementById('countdown-overlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'countdown-overlay';
+    el.style.cssText = `
+      position:fixed; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; pointer-events:none;
+      z-index:100;
+    `;
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `
+    <div style="
+      background:rgba(0,0,0,0.55); border-radius:24px;
+      padding:16px 48px; text-align:center;
+    ">
+      <div style="font-family:'Fredoka One',cursive; font-size:1rem;
+        color:rgba(255,255,255,0.7); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px;">
+        ${LEVELS[GS.round].name}
+      </div>
+      <div style="font-family:'Fredoka One',cursive; font-size:5rem; color:#ffb7c5;
+        text-shadow:0 0 30px rgba(255,183,197,0.8);">
+        ${text}
+      </div>
+    </div>
+  `;
+}
+
+function hideCountdownOverlay() {
+  const el = document.getElementById('countdown-overlay');
+  if (el) el.remove();
 }
 
 // ── Round end ──────────────────────────────────────────────
