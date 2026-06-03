@@ -157,8 +157,10 @@ function updateGame() {
   // Particles
   GS.particles = GS.particles.filter(p => { p.life--; p.x += p.vx; p.y += p.vy; p.vy += 0.3; return p.life > 0; });
 
-  // Camera follows average of both ducks
-  const targetCam = (GS.gf.x + GS.bf.x) / 2 - CANVAS_W / 2;
+  // Camera follows YOUR duck (gf if host, bf if guest, gf by default for solo testing)
+  const myC = getMyChar() || 'gf';
+  const myDuck = GS[myC];
+  const targetCam = myDuck.x - CANVAS_W / 2;
   GS.camX += (targetCam - GS.camX) * 0.08;
   GS.camX = Math.max(0, Math.min(WORLD_W - CANVAS_W, GS.camX));
 
