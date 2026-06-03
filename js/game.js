@@ -34,7 +34,7 @@ function makeDuck(who) {
   const isGf = who === 'gf';
   return {
     who,
-    x: isGf ? 120 : 80,
+    x: isGf ? 300 : 80,
     y: FLOOR_Y - 50,
     vx: 0,
     vy: 0,
@@ -298,16 +298,15 @@ function updateProjectiles() {
 
 function checkWinCondition() {
   const finX = GS.finishX;
-  // Bf catches gf: bf within 60px of gf AND gf hasn't finished
-  const bfCaught = Math.abs(GS.bf.x - GS.gf.x) < 60 && GS.gf.x < finX;
-  // Gf reaches finish
+  // Bf catches gf: bf within 55px of gf AND bf has chased (past x=200) AND gf hasn't finished
+  const bfCaught = Math.abs(GS.bf.x - GS.gf.x) < 55
+    && GS.bf.x > 200
+    && GS.gf.x < finX;
+  // Gf reaches finish line
   const gfFinished = GS.gf.x >= finX;
-  // Bf reaches finish first (shouldn't usually happen but just in case)
-  const bfFinished = GS.bf.x >= finX;
 
   if (bfCaught) endRound('bf');
   else if (gfFinished) endRound('gf');
-  else if (bfFinished) endRound('bf');
 }
 
 function endRound(winnerChar) {
