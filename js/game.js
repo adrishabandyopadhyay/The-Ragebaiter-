@@ -157,12 +157,13 @@ function updateGame() {
   // Particles
   GS.particles = GS.particles.filter(p => { p.life--; p.x += p.vx; p.y += p.vy; p.vy += 0.3; return p.life > 0; });
 
-  // Camera follows YOUR duck (gf if host, bf if guest, gf by default for solo testing)
+  // Camera follows YOUR duck — lock to 25% from left edge
   const myC = getMyChar() || 'gf';
   const myDuck = GS[myC];
-  const targetCam = myDuck.x - CANVAS_W / 2;
-  GS.camX += (targetCam - GS.camX) * 0.08;
+  const targetCam = myDuck.x - CANVAS_W * 0.25;
+  GS.camX += (targetCam - GS.camX) * 0.15;
   GS.camX = Math.max(0, Math.min(WORLD_W - CANVAS_W, GS.camX));
+  if (GS.tick % 60 === 0) console.log('myC:', myC, 'duck.x:', myDuck.x, 'camX:', GS.camX, 'CANVAS_W:', CANVAS_W);
 
   // Win condition
   checkWinCondition();
@@ -335,7 +336,7 @@ function renderGame() {
 
   // Background
   const level = LEVELS[GS.round];
-  level.drawBg(ctx, CANVAS_W + GS.camX * 2, CANVAS_H, GS.camX, GS.tick);
+  level.drawBg(ctx, WORLD_W, CANVAS_H, GS.camX, GS.tick);
 
   // Finish line
   drawFinishLine(ctx, GS.finishX);
