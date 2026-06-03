@@ -45,7 +45,7 @@ function drawFoot(ctx,x,y,s) {
 
 function drawBfDuck(ctx, x, y, scale=1, anim=0, facingLeft=false, state='idle') {
   ctx.save();
-  if(facingLeft){ ctx.translate(x*2,0); ctx.scale(-1,1); }
+  if(!facingLeft){ ctx.translate(x*2,0); ctx.scale(-1,1); }
   drawDuckBase(ctx,x,y,scale,C.white);
   ctx.save(); ctx.translate(x,y); ctx.scale(scale,scale);
   ctx.beginPath(); ctx.ellipse(-6,-30,22,5,0,0,Math.PI*2);
