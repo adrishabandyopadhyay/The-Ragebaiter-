@@ -215,7 +215,7 @@ function tryThrow(duck, who) {
       type: wtype,
       x: duck.x,
       y: duck.y - 10,
-      vx: duck.facing * 9,
+      vx: -9, // always throw LEFT back at bf who is behind her
       vy: -4,
       angle: 0,
       life: 120,
@@ -231,7 +231,7 @@ function tryThrow(duck, who) {
       type: gtype,
       x: duck.x,
       y: duck.y - 10,
-      vx: -duck.facing * 7, // throw toward gf (she runs ahead of him)
+      vx: 7, // always throw RIGHT toward gf who is ahead
       vy: -3,
       angle: 0,
       life: 120,
@@ -387,6 +387,8 @@ function renderGame() {
   const gfBob = Math.abs(GS.gf.vx) > 0.5 ? walkBob(GS.tick, 1.4) : 0;
   const bfBob = Math.abs(GS.bf.vx) > 0.5 ? walkBob(GS.tick, 1.4) : 0;
 
+  // gf faces RIGHT (away from bf, toward finish) unless moving left
+  // bf faces RIGHT (toward gf who is ahead) unless moving left
   drawGfDuck(ctx, GS.gf.x, GS.gf.y + gfBob, 0.9, GS.gf.anim, GS.gf.facing < 0, GS.gf.state);
   drawBfDuck(ctx, GS.bf.x, GS.bf.y + bfBob, 0.9, GS.bf.anim, GS.bf.facing < 0, GS.bf.state);
 
