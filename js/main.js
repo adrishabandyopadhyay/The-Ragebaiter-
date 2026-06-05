@@ -231,19 +231,19 @@ function showRoundEnd(winnerChar) {
   renderStaticBf('reBfDuck', 0.5);
   document.getElementById('roundEndCanvas').style.display = 'none';
 
-  const maxScore = Math.ceil(5 / 2);
+  const maxScore = 3; // first to 3 wins (best of 5)
   if (GS.scores.gf >= maxScore || GS.scores.bf >= maxScore || GS.round >= 4) {
     document.getElementById('nextRoundBtn').textContent = 'See Final Result! 🎊';
     document.getElementById('nextRoundBtn').onclick = () => {
-      stopScene();
       const finalWinner = GS.scores.gf > GS.scores.bf ? 'gf'
         : GS.scores.bf > GS.scores.gf ? 'bf' : 'tie';
       showGameOver(finalWinner);
       if (isHost()) sendToPeer({ type: 'gameOver', winner: finalWinner });
+      stopScene();
     };
   } else {
     document.getElementById('nextRoundBtn').textContent = 'Next Round →';
-    document.getElementById('nextRoundBtn').onclick = () => { stopScene(); startNextRound(); };
+    document.getElementById('nextRoundBtn').onclick = () => { startNextRound(); stopScene(); };
   }
 }
 
