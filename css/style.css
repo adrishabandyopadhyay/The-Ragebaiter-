@@ -179,42 +179,81 @@ html, body {
 }
 .controls-hint kbd { background: var(--cream); border: 1.5px solid #ddd; border-radius: 4px; padding: 1px 5px; font-size: .75rem; font-family: monospace; }
 
+/* ── ROUND END ── */
 #screen-round-end {
-  background: #ffe4f0; /* fallback if image not loaded */
+  background: #ffb7c5;
+  justify-content: flex-end;
+  padding-bottom: 0;
 }
 .round-end-content {
   display: flex; flex-direction: column;
-  align-items: center; gap: 20px;
-  animation: popIn .5s cubic-bezier(.34,1.56,.64,1) both;
-  background: rgba(255,255,255,0.82);
-  backdrop-filter: blur(12px);
-  border-radius: 28px;
-  padding: 36px 48px;
-  box-shadow: 0 8px 48px rgba(0,0,0,0.18);
-  max-width: 520px; width: 90%;
+  align-items: center; gap: 0;
+  animation: slideUp .5s cubic-bezier(.34,1.56,.64,1) both;
+  width: 100%;
+  background: linear-gradient(to top, rgba(255,255,255,0.97) 60%, rgba(255,255,255,0.7) 85%, transparent 100%);
+  padding: 32px 24px 48px;
 }
-.winner-announcement { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem); color: var(--dark); text-align: center; }
-.round-end-msg { font-size: 1.1rem; font-weight: 700; color: var(--pink2); text-align: center; max-width: 380px; }
-.updated-scores { display: flex; gap: 40px; }
-.score-bubble { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.score-bubble span { font-family: var(--font-display); font-size: 2.5rem; }
+.winner-announcement {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  color: var(--dark);
+  text-align: center;
+  text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+  margin-bottom: 6px;
+}
+.round-end-msg {
+  font-size: 1.05rem; font-weight: 800;
+  color: var(--pink2); text-align: center;
+  max-width: 420px; margin-bottom: 20px;
+  letter-spacing: 0.3px;
+}
+.updated-scores {
+  display: flex; gap: 48px; margin-bottom: 20px;
+  background: rgba(255,255,255,0.7);
+  padding: 14px 40px; border-radius: 60px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 20px rgba(255,143,171,0.2);
+}
+.score-bubble { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.score-bubble span { font-family: var(--font-display); font-size: 2.8rem; }
 .score-bubble.gf span { color: var(--pink2); }
 .score-bubble.bf span { color: #5b8dee; }
 
-#screen-gameover { background: #e8f4ff; /* fallback */ }
+/* ── GAME OVER ── */
+#screen-gameover {
+  background: #e8f4ff;
+  justify-content: flex-end;
+  padding-bottom: 0;
+}
 .gameover-content {
   display: flex; flex-direction: column;
-  align-items: center; gap: 24px;
-  animation: popIn .6s cubic-bezier(.34,1.56,.64,1) both;
-  background: rgba(255,255,255,0.82);
-  backdrop-filter: blur(12px);
-  border-radius: 28px;
-  padding: 40px 52px;
-  box-shadow: 0 8px 48px rgba(0,0,0,0.2);
-  max-width: 560px; width: 90%;
+  align-items: center; gap: 0;
+  animation: slideUp .6s cubic-bezier(.34,1.56,.64,1) both;
+  width: 100%;
+  background: linear-gradient(to top, rgba(255,255,255,0.97) 55%, rgba(255,255,255,0.75) 80%, transparent 100%);
+  padding: 28px 24px 52px;
 }
-.gameover-title { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); color: var(--dark); text-align: center; }
-.gameover-msg { font-size: 1.2rem; font-weight: 700; color: var(--pink2); text-align: center; max-width: 500px; }
+.gameover-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  color: var(--dark); text-align: center;
+  text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+  margin-bottom: 8px;
+}
+.gameover-msg {
+  font-size: 1.1rem; font-weight: 800;
+  color: var(--pink2); text-align: center;
+  max-width: 500px; margin-bottom: 20px;
+}
+#gameover-scene {
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+@keyframes slideUp {
+  from { opacity:0; transform: translateY(60px); }
+  to   { opacity:1; transform: translateY(0); }
+}
 
 @keyframes fadeUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
 @keyframes popIn  { from { opacity:0; transform: scale(.7); } to   { opacity:1; transform: scale(1); } }
