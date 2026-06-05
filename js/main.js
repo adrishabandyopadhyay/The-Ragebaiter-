@@ -188,35 +188,40 @@ function hideCountdownOverlay() {
 // ── Round end ──────────────────────────────────────────────
 function showRoundEnd(winnerChar) {
   stopGameLoop();
+  stopScene();
 
   const isGfWin = winnerChar === 'gf';
   const msgs = {
     gf: [
       'she said CATCH ME IF YOU CAN bestie 💅💨',
       'ragebaiter got LEFT IN THE DUST lmaoo 😂',
-      'she runs fast when she\'s unhinged fr 😤',
+      "she runs fast when she's unhinged fr 😤",
       'ms. short fuse said NOT TODAY SIR 🏃‍♀️',
       'he tried. he failed. she ate. 👏',
     ],
     bf: [
       'CAUGHT HER IN 4K 🎯😏',
-      'the rizz was too strong she couldn\'t escape 💫',
-      'ragebaiter said tag you\'re it bestie 🧢',
-      'she ran, he ran faster, it\'s JOEVER 💀',
+      "the rizz was too strong she couldn't escape 💫",
+      "ragebaiter said tag you're it bestie 🧢",
+      "she ran, he ran faster, it's JOEVER 💀",
       'GOTCHA!! no escape from the ragebaiter 😈',
     ],
   };
 
-  // Set meme background on round-end screen
+  showScreen('screen-round-end');
+
+  // Launch animated canvas scene as full background
   const screen = document.getElementById('screen-round-end');
-  screen.style.backgroundImage = isGfWin
-    ? 'url(images/scoreround2.jpg)'
-    : 'url(images/scoreround1.jpg)';
-  screen.style.backgroundSize = 'cover';
-  screen.style.backgroundPosition = 'center';
+  screen.style.background = 'none';
+  showRoundEndScene(winnerChar, screen);
+
+  // Scoreboard sits on top
+  const content2 = document.querySelector('.round-end-content');
+  content2.style.position = 'relative';
+  content2.style.zIndex = '10';
 
   document.getElementById('winnerAnnouncement').textContent =
-    isGfWin ? '🏁 Ms. Short Fuse Escapes!' : '🎯 Ragebaiter Catches Her!';
+    isGfWin ? '🔥 Ms. Short Fuse Escapes!' : '😎 Ragebaiter Catches Her!';
   document.getElementById('roundEndMsg').textContent =
     msgs[winnerChar][GS.round % msgs[winnerChar].length];
   document.getElementById('reGfScore').textContent = GS.scores.gf;
@@ -224,16 +229,13 @@ function showRoundEnd(winnerChar) {
 
   renderStaticGf('reGfDuck', 0.5);
   renderStaticBf('reBfDuck', 0.5);
+  document.getElementById('roundEndCanvas').style.display = 'none';
 
-  // Hide the canvas — not needed anymore with bg images
-  const c = document.getElementById('roundEndCanvas');
-  c.style.display = 'none';
-
-  // Check if game over
   const maxScore = Math.ceil(5 / 2);
   if (GS.scores.gf >= maxScore || GS.scores.bf >= maxScore || GS.round >= 4) {
     document.getElementById('nextRoundBtn').textContent = 'See Final Result! 🎊';
     document.getElementById('nextRoundBtn').onclick = () => {
+      stopScene();
       const finalWinner = GS.scores.gf > GS.scores.bf ? 'gf'
         : GS.scores.bf > GS.scores.gf ? 'bf' : 'tie';
       showGameOver(finalWinner);
@@ -241,10 +243,8 @@ function showRoundEnd(winnerChar) {
     };
   } else {
     document.getElementById('nextRoundBtn').textContent = 'Next Round →';
-    document.getElementById('nextRoundBtn').onclick = startNextRound;
+    document.getElementById('nextRoundBtn').onclick = () => { stopScene(); startNextRound(); };
   }
-
-  showScreen('screen-round-end');
 }
 
 function startNextRound() {
@@ -263,47 +263,76 @@ function startNextRound() {
 // ── Game over ──────────────────────────────────────────────
 function showGameOver(winnerChar) {
   stopGameLoop();
+  stopScene();
+  showScreen('screen-gameover');
 
-  // Set duckling pond background
   const screen = document.getElementById('screen-gameover');
-  screen.style.backgroundImage = 'url(images/bground2.jpg)';
-  screen.style.backgroundSize = 'cover';
-  screen.style.backgroundPosition = 'center';
+  screen.style.background = 'none';
 
-  const titles = {
-    gf:  '🏆 Ms. Short Fuse WINS! 🏆',
-    bf:  '🏆 The Ragebaiter WINS! 🏆',
-    tie: '💕 It\'s a TIE! 💕',
-  };
-
-  document.getElementById('gameoverTitle').textContent = titles[winnerChar] || titles.tie;
-
-  const c = document.getElementById('gameoverCanvas');
-  const ctx = c.getContext('2d');
-  let frame = 0;
+  // Hide old elements — scene takes over full screen
+  document.getElementById('gameoverCanvas').style.display = 'none';
+  document.getElementById('gameoverTitle').style.display = 'none';
+  document.getElementById('gameoverMsg').style.display = 'none';
+  const old = document.getElementById('gameover-scene');
+  if (old) old.remove();
 
   if (winnerChar === 'gf') {
-    // Beating scene first, then wedding
-    document.getElementById('gameoverMsg').textContent = 'she won AND she\'s getting married 😭 he gets the hands first tho 👊💒';
-    const beatAnim = setInterval(() => {
-      drawBeatingScene(ctx, c.width, c.height, frame++);
-    }, 50);
-    setTimeout(() => {
-      clearInterval(beatAnim);
-      frame = 0;
-      document.getElementById('gameoverMsg').textContent = '...and then they got married anyway 💒🥹🦆🦆';
-      setInterval(() => drawWeddingScene(ctx, c.width, c.height), 60);
-    }, 3500);
+    // Step 1: beating scene — player presses space 5 times
+    showBeatingScene(screen, () => {
+      // Step 2: after beating, wedding scene
+      stopScene();
+      screen.innerHTML = '';
+      showWeddingScene(screen);
+      addGameOverUI(screen, '🏆 Ms. Short Fuse WINS! 🏆',
+        '...and then they got married anyway 💒🥹');
+    });
+    addBeatingUI(screen);
   } else if (winnerChar === 'bf') {
-    document.getElementById('gameoverMsg').textContent = 'ragebaiter caught his girl!! time for the wedding 🎊💒🦆🦆';
-    setInterval(() => drawWeddingScene(ctx, c.width, c.height), 60);
+    showWeddingScene(screen);
+    addGameOverUI(screen, '🏆 The Ragebaiter WINS! 🏆',
+      'he caught his girl!! time for the wedding 🎊💒');
   } else {
-    document.getElementById('gameoverMsg').textContent = 'it\'s a tie?? they\'re both winners AND both getting married 💕🦆🦆';
-    setInterval(() => drawWeddingScene(ctx, c.width, c.height), 60);
+    showWeddingScene(screen);
+    addGameOverUI(screen, "💕 It's a TIE! 💕",
+      "they're BOTH getting married 💕🦆🦆");
   }
-
-  showScreen('screen-gameover');
 }
+
+function addBeatingUI(screen) {
+  // Title shown during beating
+  const title = document.createElement('div');
+  title.id = 'beating-title';
+  title.style.cssText = `
+    position:absolute; top:24px; left:50%; transform:translateX(-50%);
+    font-family:'Fredoka One',cursive; font-size:clamp(1.8rem,4vw,3rem);
+    color:#ff4400; text-shadow:0 0 30px rgba(255,100,0,1),2px 2px 0 #000;
+    text-align:center; z-index:20; white-space:nowrap;
+  `;
+  title.textContent = '🏆 Ms. Short Fuse WINS! 🏆';
+  screen.appendChild(title);
+}
+
+function addGameOverUI(screen, titleText, msgText) {
+  const ui = document.createElement('div');
+  ui.style.cssText = `
+    position:absolute; bottom:0; left:0; right:0;
+    padding:28px 24px 48px;
+    background:linear-gradient(to top, rgba(255,255,255,0.95) 60%, rgba(255,255,255,0.6) 85%, transparent 100%);
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    z-index:20;
+  `;
+  ui.innerHTML = `
+    <div style="font-family:'Fredoka One',cursive;font-size:clamp(1.8rem,4vw,3rem);color:#3a2a2a;text-align:center;">
+      ${titleText}
+    </div>
+    <div style="font-size:1.1rem;font-weight:800;color:#ff8fab;text-align:center;max-width:500px;">
+      ${msgText}
+    </div>
+    <button class="btn btn-primary" onclick="restartGame()" style="margin-top:8px;">Play Again 💕</button>
+  `;
+  screen.appendChild(ui);
+}
+
 
 function restartGame() {
   GS = makeGameState();
